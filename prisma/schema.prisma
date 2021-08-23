@@ -1,0 +1,102 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model UserType {
+  id   Int    @id @default(autoincrement())
+  name String
+  User User[]
+
+  @@map("user_types")
+}
+
+model Seller {
+  id     Int  @id @default(autoincrement())
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  @@map("sellers")
+}
+
+model User {
+  id               Int             @id @default(autoincrement())
+  email            String          @unique
+  username         String?         @db.VarChar(100)
+  password         String?         @db.VarChar(200)
+  profileImageUrl  String?         @map("profile_image_url") @db.VarChar(3000)
+  birthday         DateTime?
+  socialPlatformId Int?            @map("social_platform_id")
+  genderId         Int?            @map("gender_id")
+  userTypeId       Int             @default(1) @map("user_type_id")
+  createdAt        DateTime        @default(now()) @map("created_at")
+  socialPlatform   SocialPlatform? @relation(fields: [socialPlatformId], references: [id])
+  gender           Gender?         @relation(fields: [genderId], references: [id])
+  seller           Seller?
+  userType         UserType        @relation(fields: [userTypeId], references: [id])
+
+  @@map("users")
+}
+
+model Gender {
+  id   Int    @id @default(autoincrement())
+  name String
+  User User[]
+
+  @@map("genders")
+}
+
+model SocialPlatform {
+  id    Int    @id @default(autoincrement())
+  name  String
+  users User[]
+
+  @@map("social_platforms")
+}
+
+model Product {
+  id             Int            @id @default(autoincrement())
+  name           String
+  price          Decimal?       @db.Decimal(10, 5)
+  weight         Decimal?
+  createdAt      DateTime       @default(now()) @map("created_at")
+  productGroupId Int?           @map("product_group_id")
+  productSizeId  Int?           @map("size_id")
+  productGroup   ProductGroup?  @relation(fields: [productGroupId], references: [id])
+  productSize    ProductSize?   @relation(fields: [productSizeId], references: [id])
+  ProductImage   ProductImage[]
+
+  @@map("products")
+}
+
+model ProductGroup {
+  id      Int       @id @default(autoincrement())
+  name    String
+  Product Product[]
+
+  @@map("product_groups")
+}
+
+model ProductSize {
+  id      Int       @id @default(autoincrement())
+  name    String
+  Product Product[]
+
+  @@map("product_sizes")
+}
+
+model ProductImage {
+  id        Int     @id @default(autoincrement())
+  imageUrl  String  @db.VarChar(3000)
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+
+  @@map("product_images")
+}
