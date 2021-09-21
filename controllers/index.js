@@ -1,4 +1,5 @@
 import userController from "./userController";
 import productController from "./productController";
+import orderController from "./orderController";
 
-export { userController, productController };
+export { userController, productController, orderController };

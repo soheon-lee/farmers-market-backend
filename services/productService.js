@@ -1,12 +1,12 @@
 import { productDao } from "../models";
 
-const getProducts = async (ordering) => {
-  const products = await productDao.getProducts(ordering);
+const findProducts = async (ordering) => {
+  const products = await productDao.findProducts(ordering);
   let newProducts = [];
 
   for (let i = 0; i < products.length; i++) {
     let product = products[i];
-    product.thumbnailImage = product.ProductImage[0].imageUrl;
+    product.thumbnailImage = product.productImage[0].imageUrl;
     delete product.ProductImage;
     newProducts.push(product);
   }
@@ -14,4 +14,8 @@ const getProducts = async (ordering) => {
   return newProducts;
 };
 
-export default { getProducts };
+const findOneProduct = async (productId) => {
+  return await productDao.findOneProduct(productId);
+};
+
+export default { findProducts, findOneProduct };

@@ -11,19 +11,12 @@ generator client {
 }
 
 model UserType {
-  id   Int    @id @default(autoincrement())
-  name String
-  User User[]
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now()) @map("created_at")
+  user      User[]
 
   @@map("user_types")
-}
-
-model Seller {
-  id     Int  @id @default(autoincrement())
-  userId Int
-  user   User @relation(fields: [userId], references: [id])
-
-  @@map("sellers")
 }
 
 model User {
@@ -45,18 +38,29 @@ model User {
   @@map("users")
 }
 
+model Seller {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @unique @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@map("sellers")
+}
+
 model Gender {
-  id   Int    @id @default(autoincrement())
-  name String
-  User User[]
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now()) @map("created_at")
+  user      User[]
 
   @@map("genders")
 }
 
 model SocialPlatform {
-  id    Int    @id @default(autoincrement())
-  name  String
-  users User[]
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now()) @map("created_at")
+  user      User[]
 
   @@map("social_platforms")
 }
@@ -66,37 +70,74 @@ model Product {
   name           String
   price          Decimal?       @db.Decimal(10, 5)
   weight         Decimal?
-  createdAt      DateTime       @default(now()) @map("created_at")
   productGroupId Int?           @map("product_group_id")
   productSizeId  Int?           @map("size_id")
+  createdAt      DateTime       @default(now()) @map("created_at")
   productGroup   ProductGroup?  @relation(fields: [productGroupId], references: [id])
   productSize    ProductSize?   @relation(fields: [productSizeId], references: [id])
-  ProductImage   ProductImage[]
+  productImage   ProductImage[]
+  orderedItem    OrderedItem[]
 
   @@map("products")
 }
 
 model ProductGroup {
-  id      Int       @id @default(autoincrement())
-  name    String
-  Product Product[]
+  id        Int       @id @default(autoincrement())
+  name      String
+  createdAt DateTime  @default(now()) @map("created_at")
+  product   Product[]
 
   @@map("product_groups")
 }
 
 model ProductSize {
-  id      Int       @id @default(autoincrement())
-  name    String
-  Product Product[]
+  id        Int       @id @default(autoincrement())
+  name      String
+  createdAt DateTime  @default(now()) @map("created_at")
+  product   Product[]
 
   @@map("product_sizes")
 }
 
 model ProductImage {
-  id        Int     @id @default(autoincrement())
-  imageUrl  String  @db.VarChar(3000)
-  productId Int
-  product   Product @relation(fields: [productId], references: [id])
+  id        Int      @id @default(autoincrement())
+  imageUrl  String   @default("") @map("image_url") @db.VarChar(3000)
+  productId Int      @map("product_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  product   Product  @relation(fields: [productId], references: [id])
 
   @@map("product_images")
+}
+
+model Order {
+  id            Int           @id @default(autoincrement())
+  userId        Int           @map("user_id")
+  orderNumber   String        @map("order_number")
+  orderStatusId Int           @map("order_status_id")
+  createdAt     DateTime      @default(now()) @map("created_at")
+  orderStatus   OrderStatus   @relation(fields: [orderStatusId], references: [id])
+  orderedItem   OrderedItem[]
+
+  @@map("orders")
+}
+
+model OrderStatus {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now()) @map("created_at")
+  order     Order[]
+
+  @@map("order_status")
+}
+
+model OrderedItem {
+  id        Int      @id @default(autoincrement())
+  orderId   Int      @map("order_id")
+  productId Int      @map("product_id")
+  quantity  Int      @default(1) @map("quantity")
+  createdAt DateTime @default(now()) @map("created_at")
+  order     Order    @relation(fields: [orderId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
+
+  @@map("ordered_items")
 }

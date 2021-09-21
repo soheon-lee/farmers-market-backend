@@ -35,4 +35,19 @@ const createUserWithKakaoAccount = async (
   });
 };
 
-export default { getUserByKakaoAccount, createUserWithKakaoAccount };
+const findUserById = async (id) => {
+  return await prisma.user.findUnique({
+    where: {
+      id: id,
+    },
+    select: {
+      id: true,
+    },
+  });
+};
+
+export default {
+  getUserByKakaoAccount,
+  createUserWithKakaoAccount,
+  findUserById,
+};
