@@ -1,9 +1,9 @@
 import prisma from "../prisma";
 
-const getProducts = async (ordering) => {
+const findProducts = async (ordering) => {
   return await prisma.product.findMany({
     include: {
-      ProductImage: true,
+      productImage: true,
     },
     orderBy: [
       {
@@ -13,4 +13,11 @@ const getProducts = async (ordering) => {
   });
 };
 
-export default { getProducts };
+const findOneProduct = async (productId) => {
+  return await prisma.product.findUnique({
+    where: {
+      id: productId,
+    },
+  });
+};
+export default { findProducts, findOneProduct };

@@ -1,13 +1,23 @@
 import { productService } from "../services";
 
-const getProducts = async (req, res) => {
+const findProducts = async (req, res) => {
   try {
     const ordering = req.query.ordering;
-    const products = await productService.getProducts(ordering);
+    const products = await productService.findProducts(ordering);
     return res.status(200).json({ products });
   } catch (err) {
     console.log(err);
   }
 };
 
-export default { getProducts };
+const findOneProduct = async (req, res) => {
+  try {
+    const productId = Number(req.params.productId);
+    const product = await productService.findOneProduct(productId);
+    return res.status(200).json({ product });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export default { findProducts, findOneProduct };

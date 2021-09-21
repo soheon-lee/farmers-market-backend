@@ -23,13 +23,16 @@ const kakaoLogin = async (kakaoToken) => {
       profile_image_url
     );
     return {
-      accessToken: jwt.sign({ userId: newUser.id }, "sophiasSecretKey"),
+      accessToken: jwt.sign({ userId: newUser.id }, process.env.JWT_SECRET_KEY),
       username: newUser.username,
       profileImageUrl: newUser.profileImageUrl,
     };
   }
   return {
-    accessToken: jwt.sign({ userId: existingUser.id }, "sophiasSecretKey"),
+    accessToken: jwt.sign(
+      { userId: existingUser.id },
+      process.env.JWT_SECRET_KEY
+    ),
     username: existingUser.username,
     profileImageUrl: existingUser.profileImageUrl,
   };
