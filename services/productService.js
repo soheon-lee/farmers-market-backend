@@ -6,7 +6,6 @@ const findProducts = async (ordering) => {
 
   for (let i = 0; i < products.length; i++) {
     let product = products[i];
-    console.log(product);
     product.thumbnailImage = product.productImage[0].imageUrl;
     delete product.productImage;
     newProducts.push(product);
