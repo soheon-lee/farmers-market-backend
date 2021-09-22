@@ -32,8 +32,6 @@ const addCarts = async (userId, productId, quantity) => {
 
 const findCartItemsByUser = async (userId) => {
   const [activeOrder] = await orderDao.findOrder(userId, 1);
-  console.log("activeOrder: ", activeOrder);
-  // // user의 statusId= 1 인 order을 먼저 찾아야 하지 않나?
   return await orderDao.findOrderedItemsByOrder(activeOrder.id);
 };
 

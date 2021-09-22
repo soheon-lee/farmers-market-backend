@@ -7,6 +7,7 @@ const getUserByKakaoAccount = async (email) => {
       email: true,
       username: true,
       profileImageUrl: true,
+      userTypeId: true,
     },
     where: {
       email: `${email}`,
