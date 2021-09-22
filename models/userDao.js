@@ -42,6 +42,7 @@ const findUserById = async (id) => {
     },
     select: {
       id: true,
+      userTypeId: true,
     },
   });
 };

@@ -1,12 +1,16 @@
 import prisma from "../prisma";
 
 const findOrder = async (userId, orderStatusId) => {
-  return await prisma.order.findMany({
-    where: {
-      userId,
-      orderStatusId,
-    },
-  });
+  return await prisma.$queryRaw`
+    SELECT
+      *
+    FROM
+      orders
+    WHERE
+      user_id=${userId}
+    AND
+      order_status_id=${orderStatusId}
+  `;
 };
 
 const createOrder = async (userId, orderNumber, orderStatusId = 1) => {
@@ -20,12 +24,16 @@ const createOrder = async (userId, orderNumber, orderStatusId = 1) => {
 };
 
 const findOrderedItem = async (orderId, productId) => {
-  return await prisma.orderedItem.findUnique({
-    where: {
-      orderId,
-      productId,
-    },
-  });
+  return await prisma.$queryRaw`
+    SELECT
+      id 
+    FROM
+      ordered_items
+    WHERE
+      order_id=${orderId}
+    AND
+      product_id=${productId}
+  `;
 };
 
 const createOrderedItem = async (orderId, productId, quantity) => {
@@ -52,20 +60,20 @@ const addOrderedItemQuantity = async (cartItemId, quantity) => {
 };
 
 const findOrderedItemsByOrder = async (orderId) => {
-  return await prisma.orderedItem.findMany({
-    where: {
-      orderId,
-    },
-    select: {
-      quantity: true,
-      product: {
-        select: {
-          name: true,
-          price: true,
-        },
-      },
-    },
-  });
+  return await prisma.$queryRaw`
+    SELECT
+      oi.id as cart_item_id,
+      quantity,
+      p.name,
+      p.price,
+      p.id as product_id
+    FROM
+      ordered_items oi
+    JOIN
+      products as p
+    ON
+      oi.product_id = p.id
+  `;
 };
 export default {
   findOrder,
