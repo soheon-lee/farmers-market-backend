@@ -14,13 +14,12 @@ const addCarts = async (userId, productId, quantity) => {
     );
     return await orderDao.createOrderedItem(newOrder.id, productId, quantity);
   }
-  const [existingCartItem] = await orderDao.findOrderedItem(
+  const existingCartItem = await orderDao.findOrderedItem(
     existingOrder.id,
     productId
   );
 
   if (!existingCartItem) {
-    console.log("a");
     return await orderDao.createOrderedItem(
       existingOrder.id,
       productId,
@@ -31,4 +30,11 @@ const addCarts = async (userId, productId, quantity) => {
   return await orderDao.addOrderedItemQuantity(existingCartItem.id, quantity);
 };
 
-export default { addCarts };
+const findCartItemsByUser = async (userId) => {
+  const [activeOrder] = await orderDao.findOrder(userId, 1);
+  console.log("activeOrder: ", activeOrder);
+  // // user의 statusId= 1 인 order을 먼저 찾아야 하지 않나?
+  return await orderDao.findOrderedItemsByOrder(activeOrder.id);
+};
+
+export default { addCarts, findCartItemsByUser };

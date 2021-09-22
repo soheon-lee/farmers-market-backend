@@ -16,7 +16,13 @@ const findProducts = async (ordering) => {
 };
 
 const findOneProduct = async (productId) => {
-  return await productDao.findOneProduct(productId);
+  const product = await productDao.findOneProduct(productId);
+  if (!product) {
+    const err = new Error("PRODUCT_DOES_NOT_EXIST");
+    err.statusCode = 404;
+    throw err;
+  }
+  return product;
 };
 
 export default { findProducts, findOneProduct };

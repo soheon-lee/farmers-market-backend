@@ -17,6 +17,7 @@ const findOneProduct = async (req, res) => {
     return res.status(200).json({ product });
   } catch (err) {
     console.log(err);
+    res.status(err.statusCode || 500).json({ message: err.message });
   }
 };
 
