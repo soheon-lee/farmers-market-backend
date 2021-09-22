@@ -20,7 +20,7 @@ const createOrder = async (userId, orderNumber, orderStatusId = 1) => {
 };
 
 const findOrderedItem = async (orderId, productId) => {
-  return await prisma.orderedItem.findMany({
+  return await prisma.orderedItem.findUnique({
     where: {
       orderId,
       productId,
@@ -50,10 +50,28 @@ const addOrderedItemQuantity = async (cartItemId, quantity) => {
     },
   });
 };
+
+const findOrderedItemsByOrder = async (orderId) => {
+  return await prisma.orderedItem.findMany({
+    where: {
+      orderId,
+    },
+    select: {
+      quantity: true,
+      product: {
+        select: {
+          name: true,
+          price: true,
+        },
+      },
+    },
+  });
+};
 export default {
   findOrder,
   createOrder,
   findOrderedItem,
   createOrderedItem,
   addOrderedItemQuantity,
+  findOrderedItemsByOrder,
 };
