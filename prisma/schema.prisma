@@ -69,7 +69,7 @@ model Product {
   id             Int            @id @default(autoincrement())
   name           String
   price          Decimal?       @db.Decimal(10, 5)
-  weight         Decimal?
+  weight         String?
   productGroupId Int?           @map("product_group_id")
   productSizeId  Int?           @map("size_id")
   createdAt      DateTime       @default(now()) @map("created_at")
